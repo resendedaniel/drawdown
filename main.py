@@ -17,7 +17,7 @@ def get_ibov():
     url = 'https://assets-comparacaodefundos.s3-sa-east-1.amazonaws.com/cvm/ibovespa'
     data = pd.read_json(url)
     data = data.rename(columns={'c': 'value'})
-    data = data.append({'d': 20200317, 'value': 74167.0}, ignore_index=True)
+    data = data.append({'d': 20200318, 'value': 66895.0}, ignore_index=True)
     data['d'] = pd.to_datetime(data['d'], format='%Y%m%d')
     data = data.sort_values('d')
 
@@ -112,7 +112,7 @@ plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=Tru
 plt.tick_params(axis='y', which='both', right=False, left=False, labelleft=True)
 plt.title(strs[ind]['title'], size=28)
 plt.gca().set_yticklabels(['{:.0f}%'.format(x*100) for x in plt.gca().get_yticks()])
-now = (dt.datetime.today() - dt.timedelta(days=1)).strftime('%Y-%m-%d')
+now = (dt.datetime.today() - dt.timedelta(days=0)).strftime('%Y-%m-%d')
 plt.xlabel('{}'.format(strs[ind]['xlabel'].format(now)), horizontalalignment='right', x=1.0)
 
 my_dpi=300
