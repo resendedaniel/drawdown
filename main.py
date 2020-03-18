@@ -17,7 +17,7 @@ def get_ibov():
     url = 'https://assets-comparacaodefundos.s3-sa-east-1.amazonaws.com/cvm/ibovespa'
     data = pd.read_json(url)
     data = data.rename(columns={'c': 'value'})
-    data = data.append({'d': 20200316, 'value': 71168.0}, ignore_index=True)
+    data = data.append({'d': 20200317, 'value': 74167.0}, ignore_index=True)
     data['d'] = pd.to_datetime(data['d'], format='%Y%m%d')
     data = data.sort_values('d')
 
@@ -26,7 +26,7 @@ def get_ibov():
 def get_sp500():
     #    yf.pdr_override() # <== that's all it takes :-)
     data = pdr.get_data_yahoo('^GSPC',
-        dt.datetime(1970, 1, 1),
+        dt.datetime(1910, 1, 1),
         dt.datetime.today())
     data = data.reset_index()
     data = data.rename(columns={'Date': 'd', 'Close': 'value'})
@@ -43,9 +43,12 @@ def get_dowjones():
     return data
 
 
-ind = 'dowjones'
+ind = 'sp500'
 data = get_data(ind)
-print(data.tail())
+
+print(ind)
+print('head', data.head())
+print('tail', data.tail())
 
 strs = {
     'ibov': {
@@ -54,7 +57,7 @@ strs = {
     },
     'sp500': {
         'title': 'Current S&P 500 sell off against major ones',
-        'xlabel': '# of trading days since first fall\nSince 1970\nUpdated at {}\n\nTwitter @resendedaniel_',
+        'xlabel': '# of trading days since first fall\nSince 1927\nUpdated at {}\n\nTwitter @resendedaniel_',
     },
     'dowjones': {
         'title': 'Current Dow Jones sell off against major ones',
