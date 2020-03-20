@@ -41,8 +41,8 @@ def process_data(raw_data):
     return data
 
 def save_data(data, ind):
-    date_str = dt.datetime.today().isoformat()[:10]
-    data.to_json('data/{}_{}.json'.format(ind, date_str))
+    #date_str = dt.datetime.today().isoformat()[:10]
+    data.to_json('data/{}.json'.format(ind, date_str))
 
 def plot_data(data):
     strs = {
