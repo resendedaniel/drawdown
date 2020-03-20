@@ -24,13 +24,6 @@ def get_data(ind):
 
     return data
 
-def get_dowjones():
-    file = 'data/dowjones_daily.csv'
-    data = pd.read_csv(file, skiprows=9)
-    data = data.rename(columns={'Date': 'd', 'Closing Value': 'value'})
-
-    return data
-
 def process_data(raw_data):
     data = raw_data.copy()
     ath = data['value'].max()
@@ -60,10 +53,6 @@ def plot_data(data):
         'sp500': {
             'title': 'Current S&P 500 sell off against major ones',
             'xlabel': '# of trading days since first fall\nSince 1927\nUpdated at {}\n\nTwitter @resendedaniel_',
-        },
-        'dowjones': {
-            'title': 'Current Dow Jones sell off against major ones',
-            'xlabel': '# of trading days since first fall\nSince 1914\nUpdated at {}\n\nTwitter @resendedaniel_',
         }
     }
 
