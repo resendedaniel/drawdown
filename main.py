@@ -2,31 +2,20 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas_datareader import data as pdr
-#import fix_yahoo_finance as yf
 import datetime as dt
 
 def get_data(ind):
-    if ind == 'ibov':
-        return get_ibov()
-    elif ind == 'sp500':
-        return get_sp500()
-    elif ind == 'dowjones':
-        return get_dowjones()
-
-def get_ibov():
-    url = 'https://assets-comparacaodefundos.s3-sa-east-1.amazonaws.com/cvm/ibovespa'
-    data = pd.read_json(url)
-    data = data.rename(columns={'c': 'value'})
-    data = data.append({'d': 20200319, 'value': 69037.0}, ignore_index=True)
-    data['d'] = pd.to_datetime(data['d'], format='%Y%m%d')
-    data = data.sort_values('d')
-
-    return data
-
-def get_sp500():
+    ticker = {
+        'ibov': '^BVSP',
+        'sp500': '^GSPC'
+    }
+    start = {
+        'ibov': dt.datetime(2000, 1, 1),
+        'sp500': dt.datetime(1910, 1, 1)
+    }
     #    yf.pdr_override() # <== that's all it takes :-)
-    data = pdr.get_data_yahoo('^GSPC',
-        dt.datetime(1910, 1, 1),
+    data = pdr.get_data_yahoo(ticker[ind],
+        start[ind],
         dt.datetime.today())
     data = data.reset_index()
     data = data.rename(columns={'Date': 'd', 'Close': 'value'})
@@ -128,4 +117,4 @@ for ind in ['ibov', 'sp500']:
     data = get_data(ind)
     data = process_data(data)
     save_data(data, ind)
-    # plot_data(data)
+    plot_data(data)
