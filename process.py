@@ -35,3 +35,22 @@ def drawdown(raw_data):
     data['drawdown'] = drawdown
 
     return data
+
+
+def recover(raw_data):
+    data = raw_data[['d', 'value']].copy()
+    data['delta'] = data['value'].diff().fillna(0)
+    data['delta'] = data['delta'] / (data['value'] - data['delta']) + 1
+
+    data['cummax'] = data['value'].cummax()
+    data['cumdelta'] = data.groupby('cummax')['delta'].cumprod()
+    data['min'] = data.groupby('cummax')['cumdelta'].transform('min')
+    data['cumdelta'] = data['cumdelta'] / data['min']
+    data['cumdelta'] = data['cumdelta'] - 1
+
+    data['ord_d'] = data.groupby('cummax').cumcount()
+    min_idx = data.groupby('cummax')['value'].idxmin().to_dict()
+    data['ord_d'] = data['ord_d'] - \
+        data['cummax'].map(min_idx).apply(lambda x: data.iloc[x]['ord_d'])
+
+    return data

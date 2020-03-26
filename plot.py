@@ -36,7 +36,7 @@ def crashes(data, symbol):
                      ' {}: {:.1%} '.format(str(sub['d'].values[0])[:4], sub['delta'].values[-1]),
                      color=color_max if x == ath else color_non_max,
                      horizontalalignment='left' if str(sub['d'].values[0])[:4] in [
-                '2018', '2004'] else 'right',
+                '2018', '2004', '1987'] else 'right',
                 verticalalignment='center')
 
     ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
@@ -66,4 +66,62 @@ def drawdown(data, symbol):
     plt.tick_params(axis='y', which='both', right=False, left=False, labelleft=True)
     plt.gca().set_yticklabels(['{:.0f}%'.format(x*100) for x in plt.gca().get_yticks()])
     plt.title('{} Drawdown'.format(symbol))
+    plt.show()
+
+
+def recover(data, symbol):
+    strs = {
+        '^BVSP': {
+            'title': 'Comportamento do Ibovespa nos auges das quedas',
+            'xlabel': '# pregões desde o mínimo\nDesde 2000\nAtualizado em {}\n\nTwitter @resendedaniel_',
+            'ylabel': 'Variação sobre o valor do menor fechamento',
+        },
+        '^GSPC': {
+            'title': 'S&P 500 Behavior around bottoms',
+            'xlabel': '# of trading days since minimal\nSince 1927\nUpdated at {}\n\nTwitter @resendedaniel_',
+            'ylabel': 'Variation over minimum close value',
+        }
+    }
+    color_max = '#E6550D'
+    color_non_max = 'grey'
+    ath = data['value'].max()
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    for x in data['cummax'].unique():
+        sub = data[data['cummax'] == x]
+        sub_d = sub['ord_d'].max()
+        sub = sub[sub['ord_d'] >= -100]
+        sub = sub[sub['ord_d'] <= 100]
+        if sub['min'].min() < .98:
+            plt.plot(sub['ord_d'], sub['cumdelta'],
+                     color=color_max if x == ath else color_non_max,
+                     alpha=1 if x == ath else (1 - sub['min'].min()) ** .8)
+            plt.scatter(sub['ord_d'].max(),
+                        sub['cumdelta'].values[-1],
+                        color=color_max if x == ath else color_non_max,
+                        alpha=1 if x == ath else (1 - sub['min'].min()) ** .8,
+                        marker='.')
+        if sub['min'].min() < .8 or x == ath:
+            plt.text(sub['ord_d'].max(),
+                     sub['cumdelta'].values[-1],
+                     ' {}'.format(str(sub['d'].values[0])[:4], sub_d),
+                     color=color_max if x == ath else color_non_max,
+                     horizontalalignment='right' if str(sub['d'].values[0])[:4] in [
+                '2018'] else 'left',
+                verticalalignment='center')
+
+    ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=True)
+    plt.tick_params(axis='y', which='both', right=False, left=False, labelleft=True)
+    plt.title(strs[symbol]['title'], size=28)
+    plt.gca().set_yticklabels(['{:.0f}%'.format(x*100) for x in plt.gca().get_yticks()])
+    now = (dt.datetime.today() - dt.timedelta(days=0)).strftime('%Y-%m-%d')
+    plt.xlabel('{}'.format(strs[symbol]['xlabel'].format(now)),
+               horizontalalignment='right', x=1.0)
+    plt.ylabel('{}'.format(strs[symbol]['ylabel'].format(now)))
+
     plt.show()
