@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import datetime as dt
+import numpy as np
+import seaborn as sns
+from adjustText import adjust_text
 
 
 def crashes(data, symbol):
@@ -36,7 +39,7 @@ def crashes(data, symbol):
                      ' {}: {:.1%} '.format(str(sub['d'].values[0])[:4], sub['delta'].values[-1]),
                      color=color_max if x == ath else color_non_max,
                      horizontalalignment='left' if str(sub['d'].values[0])[:4] in [
-                '2018', '2004', '1987'] else 'right',
+                '2018', '2004', '1987', '2020'] else 'right',
                 verticalalignment='center')
 
     ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
@@ -123,5 +126,56 @@ def recover(data, symbol):
     plt.xlabel('{}'.format(strs[symbol]['xlabel'].format(now)),
                horizontalalignment='right', x=1.0)
     plt.ylabel('{}'.format(strs[symbol]['ylabel'].format(now)))
+
+    plt.show()
+
+
+def crash_2020_trajectories(data):
+    fall_values = data.groupby('symbol').last().reset_index()
+    fall_values = fall_values.sort_values('cumdelta')
+    n = min(16, int(fall_values.shape[0]/2))
+    top_symbols = fall_values['symbol'].values[:n]
+    bottom_symbols = fall_values['symbol'].values[-n:]
+    colors = sns.color_palette("RdBu", n_colors=fall_values.shape[0]).as_hex()
+    #colors = colors[:n] + colors[-n:]
+
+    top_domain = np.mean(fall_values['cumdelta'].values[:n]) + np.array([.16, -.16])
+    top_range = list(np.linspace(top_domain[0], top_domain[1], n))
+
+    bottom_domain = np.mean(fall_values['cumdelta'].values[-n:]) + np.array([.16, -.16])
+    bottom_range = list(np.linspace(bottom_domain[0], bottom_domain[1], n))
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    texts = []
+    for symbol in fall_values['symbol']:
+        equity_data = data[data['symbol'] == symbol]
+        color = colors.pop(0)
+        alpha = .66 if symbol in top_symbols or symbol in bottom_symbols else .2
+        plt.plot(equity_data['d'],
+                 equity_data['cumdelta'],
+                 c=color,
+                 linewidth=1.0,
+                 alpha=alpha)
+
+        if symbol in top_symbols:
+            plt.text(equity_data['d'].values[-1],
+                     top_range.pop(),
+                     '{} {:.1%}'.format(symbol, equity_data['cumdelta'].values[-1]),
+                     c=color)
+        if symbol in bottom_symbols:
+            plt.text(equity_data['d'].values[-1],
+                     bottom_range.pop(),
+                     '{} {:.1%}'.format(symbol, equity_data['cumdelta'].values[-1]),
+                     c=color)
+
+    ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=True)
+    plt.tick_params(axis='y', which='both', right=False, left=False, labelleft=True)
+    plt.title('Quedas do crash de 2020')
+    plt.gca().set_yticklabels(['{:.0f}%'.format(x*100) for x in plt.gca().get_yticks()])
 
     plt.show()

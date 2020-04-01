@@ -54,3 +54,13 @@ def recover(raw_data):
         data['cummax'].map(min_idx).apply(lambda x: data.iloc[x]['ord_d'])
 
     return data
+
+
+def crash_2020(raw_data):
+    data = raw_data[['d', 'value']].copy()
+    data['delta'] = data['value'].diff().fillna(0)
+    data['delta'] = data['delta'] / (data['value'] - data['delta']) + 1
+    data['cumdelta'] = data['delta'].cumprod()
+    data['cumdelta'] = data['cumdelta'] - 1
+
+    return data

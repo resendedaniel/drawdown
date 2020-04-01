@@ -9,7 +9,7 @@ for symbol in symbols:
     print(data.tail())
 
     crashes = process.crashes(data)
-    cache.save_crashes(crashes, symbol)
+#    cache.save_crashes(crashes, symbol)
     plot.crashes(crashes, symbol)
 
 #    drawdown = process.drawdown(data)
