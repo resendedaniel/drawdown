@@ -5,11 +5,12 @@ import pandas as pd
 def save_crashes(data, symbol):
     #    date_str = dt.datetime.today().isoformat()[:10]
     data.to_json('data/crashes_{}.json'.format(symbol))
+    data.to_csv('data/crashes_{}.csv'.format(symbol))
 
 
 def save_drawdown(data, symbol):
     #    date_str = dt.datetime.today().isoformat()[:10]
-    data.to_json('data/drawdown_{}.json'.format(symbol))
+    data.to_json('data/drawdown_{}.'.format(symbol))
 
 
 def save_ibov_equity(df, symbol):
