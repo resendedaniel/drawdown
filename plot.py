@@ -2,18 +2,18 @@ import matplotlib.pyplot as plt
 import datetime as dt
 import numpy as np
 import seaborn as sns
-from adjustText import adjust_text
 
-
-def crashes(data, symbol):
+def crashes(data, symbol, save=False):
     strs = {
         '^BVSP': {
             'title': 'Ibovespa: Atual queda comparada com suas maiores',
-            'xlabel': '  # de dias úteis desde a primeira queda\nDesde 2000\nAtualizado em {}\n\nTwitter @resendedaniel_',
+            'xlabel': '  # de dias úteis desde a primeira queda\nDesde 2000\nAtualizado em {}\n\nTwitter @resende451',
+            'id': 'ibov'
         },
         '^GSPC': {
             'title': 'Current S&P 500 sell off against major ones',
-            'xlabel': '  # of trading days since first fall\nSince 1927\nUpdated at {}\n\nTwitter @resendedaniel_',
+            'xlabel': '  # of trading days since first fall\nSince 1927\nUpdated at {}\n\nTwitter @resende451',
+            'id': 'sp500'
         }
     }
 
@@ -21,7 +21,7 @@ def crashes(data, symbol):
     color_non_max = 'grey'
     ath = data['value'].max()
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10.8*16/9, 10.8))
     for x in data['cummax'].unique():
         sub = data[data['cummax'] == x]
         if sub['delta'].min() < -.02:
@@ -54,7 +54,10 @@ def crashes(data, symbol):
     now = (dt.datetime.today() - dt.timedelta(days=0)).strftime('%Y-%m-%d')
     plt.xlabel('{}'.format(strs[symbol]['xlabel'].format(now)), horizontalalignment='right', x=1.0)
 
-    plt.show()
+    if save:
+        plt.savefig('img/crash_{}.png'.format(strs[symbol]['id']), dpi=100)
+    else:
+        plt.show()
 
 
 def drawdown(data, symbol):
@@ -72,24 +75,26 @@ def drawdown(data, symbol):
     plt.show()
 
 
-def recover(data, symbol):
+def recover(data, symbol, save=False):
     strs = {
         '^BVSP': {
             'title': 'Comportamento do Ibovespa nos auges das quedas',
-            'xlabel': '# pregões desde o mínimo\nDesde 2000\nAtualizado em {}\n\nTwitter @resendedaniel_',
+            'xlabel': '# pregões desde o mínimo\nDesde 2000\nAtualizado em {}\n\nTwitter @resende451',
             'ylabel': 'Variação sobre o valor do menor fechamento',
+            'id': 'ibov'
         },
         '^GSPC': {
             'title': 'S&P 500 Behavior around bottoms',
-            'xlabel': '# of trading days since minimal\nSince 1927\nUpdated at {}\n\nTwitter @resendedaniel_',
+            'xlabel': '# of trading days since minimal\nSince 1927\nUpdated at {}\n\nTwitter @resende451',
             'ylabel': 'Variation over minimum close value',
+            'id': 'sp500'
         }
     }
     color_max = '#E6550D'
     color_non_max = 'grey'
     ath = data['value'].max()
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10.8, 10.8))
     for x in data['cummax'].unique():
         sub = data[data['cummax'] == x]
         sub_d = sub['ord_d'].max()
@@ -127,7 +132,10 @@ def recover(data, symbol):
                horizontalalignment='right', x=1.0)
     plt.ylabel('{}'.format(strs[symbol]['ylabel'].format(now)))
 
-    plt.show()
+    if save:
+        plt.savefig('img/recovery_{}.png'.format(strs[symbol]['id']), dpi=100)
+    else:
+        plt.show()
 
 
 def crash_2020_trajectories(data):
@@ -139,10 +147,10 @@ def crash_2020_trajectories(data):
     colors = sns.color_palette("RdBu", n_colors=fall_values.shape[0]).as_hex()
     #colors = colors[:n] + colors[-n:]
 
-    top_domain = np.mean(fall_values['cumdelta'].values[:n]) + np.array([.16, -.16])
+    top_domain = np.mean(fall_values['cumdelta'].values[:n]) + np.array([.06, -.06])
     top_range = list(np.linspace(top_domain[0], top_domain[1], n))
 
-    bottom_domain = np.mean(fall_values['cumdelta'].values[-n:]) + np.array([.16, -.16])
+    bottom_domain = np.mean(fall_values['cumdelta'].values[-n:]) + np.array([.06, -.06])
     bottom_range = list(np.linspace(bottom_domain[0], bottom_domain[1], n))
 
     fig, ax = plt.subplots(figsize=(10, 5))

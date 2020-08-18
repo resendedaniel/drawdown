@@ -11,7 +11,7 @@ def cache_symbols(symbols):
     for symbol in symbols:
         if not cache.check_equity_data_availability(symbol):
             print(symbol)
-            symbol = '{}.SA'.format(symbol)
+            #symbol = '{}.SA'.format(symbol)
             data = feeder_yahoo.get_data(symbol, dt.datetime(2020, 2, 19))
             symbol = symbol.replace('.SA', '')
             df = process.crash_2020(data)
@@ -31,7 +31,7 @@ def load_symbols(symbols):
     return falls
 
 
-cache_symbols(symbols.ibrxa_symbols)
-falls = load_symbols(symbols.ibrxa_symbols)
+cache_symbols(symbols.interest)
+falls = load_symbols(symbols.interest)
 
 plot.crash_2020_trajectories(falls)

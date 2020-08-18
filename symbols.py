@@ -148,6 +148,20 @@ ibrxa_symbols = [
     'YDUQ3',
 ]
 
+interest = [
+    'AMZN',
+    'IBB',
+    'GOOGL',
+    'SPLK',
+    'WORK',
+    'LQD',
+    'HYG',
+    'MELI',
+    'MCD',
+    'ITA',
+    '^GSPC'
+]
+
 sp500 = [
     'MSFT',
     'AAPL',
