@@ -3,7 +3,7 @@ import datetime as dt
 import pandas as pd
 
 
-def get_data(symbol, start_date=dt.datetime(2020, 2, 19)):
+def get_data(symbol, start_date=dt.datetime(2010, 1, 1)):
     start = {
         '^BVSP': dt.datetime(2000, 1, 1),
         '^GSPC': dt.datetime(1910, 1, 1)
@@ -21,5 +21,12 @@ def get_data(symbol, start_date=dt.datetime(2020, 2, 19)):
         'Volume': 'volume'
     })
     data['d'] = pd.to_datetime(data['d'])
+
+    return data
+
+def process_data(data):
+    data['delta'] = data['close'].diff()
+    data['delta'] = data['delta'].fillna(0)
+    data['delta'] = data['close'] / (data['close'] - data['delta'])
 
     return data
