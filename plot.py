@@ -7,7 +7,7 @@ def crashes(data, symbol, save=False):
     strs = {
         '^BVSP': {
             'title': 'Ibovespa: Atual queda comparada com suas maiores',
-            'xlabel': '  # de dias úteis desde a primeira queda\nDesde 2000\nAtualizado em {}\n\nTwitter @resende451',
+            'xlabel': '  # de dias úteis desde a primeira queda\nDesde 1996\nAtualizado em {}\n\nTwitter @resende451',
             'id': 'ibov'
         },
         '^GSPC': {

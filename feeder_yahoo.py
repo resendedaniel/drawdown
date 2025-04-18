@@ -1,28 +1,32 @@
-from pandas_datareader import data as pdr
-import datetime as dt
+import yfinance as yf
 import pandas as pd
+import datetime as dt
 
 
 def get_data(symbol, start_date=dt.datetime(2010, 1, 1)):
     start = {
-        '^BVSP': dt.datetime(2000, 1, 1),
-        '^GSPC': dt.datetime(1910, 1, 1)
+        '^BVSP': dt.datetime(1996, 1, 1),
+        '^GSPC': dt.datetime(1910, 1, 1),
+        '^IXIC': dt.datetime(1910, 1, 1)
     }
     #    yf.pdr_override() # <== that's all it takes :-)
-    data = pdr.get_data_yahoo(symbol, start.get(symbol, start_date))
+    data = yf.download(symbol, interval='1d')
     data = data.reset_index()
     data = data.rename(columns={
         'Date': 'd',
         'High': 'high',
         'Low': 'low',
-        'Close': 'close',
-        'Adj Close': 'value',
+        'Close': 'value',
+        #'Adj Close': 'value',
         'Open': 'open',
         'Volume': 'volume'
     })
-    data['d'] = pd.to_datetime(data['d'])
+    x = pd.DataFrame()
+    x['d'] = data['d']
+    x['value'] = data['value']
+    x['d'] = pd.to_datetime(x['d'])
 
-    return data
+    return x
 
 def process_data(data):
     data['delta'] = data['close'].diff()

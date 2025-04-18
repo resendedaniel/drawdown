@@ -3,18 +3,17 @@ import process
 import cache
 import plot
 
-symbols = ['^BVSP', '^GSPC']
-for symbol in symbols:
-    data = feeder_yahoo.get_data(symbol)
-    print(data.tail())
+symbol = '^GSPC'
+data = feeder_yahoo.get_data(symbol)
+print(data.tail())
 
-    crashes = process.crashes(data)
-    cache.save_crashes(crashes, symbol)
-    plot.crashes(crashes, symbol, save=True)
+crashes = process.crashes(data)
+cache.save_crashes(crashes, symbol)
+plot.crashes(crashes, symbol, save=True)
 
 #    drawdown = process.drawdown(data)
 #    cache.save_drawdown(drawdown, symbol)
 #    plot.drawdown(drawdown, symbol)
 
-    recover = process.recover(data)
-    plot.recover(recover, symbol, save=True)
+recover = process.recover(data)
+plot.recover(recover, symbol, save=True)

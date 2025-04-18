@@ -32,6 +32,7 @@ def drawdown(raw_data):
     for i in np.arange(len(data['factor'])):
         current_drawdown = min(current_drawdown * data['factor'][i], 1)
         drawdown.append(current_drawdown)
+        
     data['drawdown'] = drawdown
 
     return data

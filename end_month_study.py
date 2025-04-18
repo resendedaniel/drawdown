@@ -19,11 +19,11 @@ for mon in data['mon'].unique():
     i = subset.index[-1]
     prev = data.loc[i-(days-1):i+1, 'delta'].prod()-1
     post = data.loc[i+1:i+days, 'delta'].prod()-1
-    results.append({
-        'mon': mon,
-        'prev': prev,
-        'post': post,
-    })
+        results.append({
+            'mon': mon,
+            'prev': prev,
+            'post': post,
+        })
 
 results = pd.DataFrame(results)
 
